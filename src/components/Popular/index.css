@@ -1,158 +1,104 @@
-import React from 'react'
-import Loader from 'react-loader-spinner'
+.route-page-body {
+  min-height: calc(100vh - 70px);
 
-import MovieCard from '../MovieCard'
-import NavBar from '../NavBar'
-import Pagination from '../Pagination'
+  padding: 25px 35px 40px;
 
-import './index.css'
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(0, 180, 255, 0.08),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at top right,
+      rgba(99, 91, 255, 0.08),
+      transparent 35%
+    ),
+    #0f1014;
 
-class Popular extends React.Component {
-  state = {
-    isLoading: true,
-    popularMovieResponse: {},
-    hasError: false,
+  color: #fff;
+}
+
+
+/* Movie list */
+
+.route-page-body ul {
+  display: grid;
+
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(180px, 1fr)
+  );
+
+  gap: 28px 20px;
+
+  width: 100%;
+  max-width: 1400px;
+
+  margin: 0 auto !important;
+
+  padding-top: 10px !important;
+}
+
+
+/* Loader */
+
+.loader-container {
+  min-height: calc(100vh - 160px);
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  flex-direction: column;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(0, 180, 255, 0.08),
+      transparent 45%
+    );
+}
+
+
+/* Optional loader glow */
+
+.loader-container svg {
+  filter:
+    drop-shadow(0 0 8px rgba(0, 180, 255, 0.5));
+}
+
+
+/* Tablet */
+
+@media screen and (max-width: 768px) {
+  .route-page-body {
+    padding: 20px 18px 30px;
   }
 
-  componentDidMount() {
-    this.getPopularMoviesResponse()
-  }
+  .route-page-body ul {
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(160px, 1fr)
+    );
 
-  getUpdatedData = responseData => ({
-    totalPages: responseData.total_pages,
-    totalResults: responseData.total_results,
-
-    results: responseData.results.map(eachMovie => ({
-      id: eachMovie.id,
-      posterPath: eachMovie.poster_path
-        ? `https://image.tmdb.org/t/p/w500${eachMovie.poster_path}`
-        : 'https://via.placeholder.com/500x750?text=No+Image',
-      voteAverage: eachMovie.vote_average,
-      title: eachMovie.title,
-    })),
-  })
-
-  getPopularMoviesResponse = async (page = 1) => {
-    this.setState({
-      isLoading: true,
-      hasError: false,
-    })
-
-    const API_KEY = 'f32b79895b21468afbdd6d5342cbf3da'
-
-    const apiUrl = `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=en-US&page=${page}`
-
-    try {
-      const response = await fetch(apiUrl)
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch movies')
-      }
-
-      const data = await response.json()
-
-      const newData = this.getUpdatedData(data)
-
-      this.setState({
-        isLoading: false,
-        popularMovieResponse: newData,
-      })
-    } catch (error) {
-      this.setState({
-        isLoading: false,
-        hasError: true,
-      })
-    }
-  }
-
-  renderLoadingView = () => (
-    <div className="loader-container">
-      <Loader
-        type="TailSpin"
-        color="#00c6ff"
-        height={50}
-        width={50}
-      />
-
-      <p className="loading-text">
-        Loading movies...
-      </p>
-    </div>
-  )
-
-  renderErrorView = () => (
-    <div className="error-container">
-      <h1>Something went wrong</h1>
-
-      <p>
-        We couldn't load the movies. Please try again.
-      </p>
-
-      <button
-        type="button"
-        className="retry-button"
-        onClick={() => this.getPopularMoviesResponse()}
-      >
-        Try Again
-      </button>
-    </div>
-  )
-
-  renderPopularMoviesList = () => {
-    const {popularMovieResponse} = this.state
-
-    const {results = []} = popularMovieResponse
-
-    if (results.length === 0) {
-      return (
-        <div className="empty-container">
-          <h1>No movies found</h1>
-        </div>
-      )
-    }
-
-    return (
-      <ul className="movie-list">
-        {results.map(movie => (
-          <MovieCard
-            key={movie.id}
-            movieDetails={movie}
-          />
-        ))}
-      </ul>
-    )
-  }
-
-  render() {
-    const {
-      isLoading,
-      popularMovieResponse,
-      hasError,
-    } = this.state
-
-    return (
-      <>
-        <NavBar />
-
-        <main className="route-page-body">
-          {isLoading
-            ? this.renderLoadingView()
-            : hasError
-            ? this.renderErrorView()
-            : this.renderPopularMoviesList()}
-        </main>
-
-        {!isLoading &&
-          !hasError &&
-          popularMovieResponse.totalPages && (
-            <Pagination
-              totalPages={popularMovieResponse.totalPages}
-              apiCallback={this.getPopularMoviesResponse}
-            />
-          )}
-      </>
-    )
+    gap: 24px 14px;
   }
 }
 
-export default Popular
+
+/* Mobile */
+
+@media screen and (max-width: 425px) {
+  .route-page-body {
+    padding: 18px 12px 25px;
+  }
+
+  .route-page-body ul {
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 22px 12px;
+  }
+}
