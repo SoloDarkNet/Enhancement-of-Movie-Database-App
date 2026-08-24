@@ -13,17 +13,13 @@ const MovieCard = props => {
             className="movie-card-image"
             src={posterPath}
             alt={title}
+            loading="lazy"
           />
 
           <div className="movie-overlay">
-            <span className="rating-badge">
-              ⭐ {voteAverage}
-            </span>
+            <span className="rating-badge">⭐ {voteAverage}</span>
 
-            <button
-              className="view-details-btn"
-              type="button"
-            >
+            <button className="view-details-btn" type="button">
               View Details
             </button>
           </div>
@@ -31,9 +27,7 @@ const MovieCard = props => {
 
         <div className="movie-info">
           <h1 className="movie-title">{title}</h1>
-          <p className="movie-rating">
-            ⭐ {voteAverage}
-          </p>
+          <p className="movie-rating">⭐ {voteAverage}</p>
         </div>
       </Link>
     </li>

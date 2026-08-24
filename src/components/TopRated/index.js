@@ -63,16 +63,9 @@ class TopRated extends React.Component {
 
   renderLoadingView = () => (
     <div className="loader-container">
-      <Loader
-        type="TailSpin"
-        color="#00c6ff"
-        height={50}
-        width={50}
-      />
+      <Loader type="TailSpin" color="#00c6ff" height={50} width={50} />
 
-      <p className="loading-text">
-        Loading top rated movies...
-      </p>
+      <p className="loading-text">Loading top rated movies...</p>
     </div>
   )
 
@@ -84,9 +77,7 @@ class TopRated extends React.Component {
     return (
       <div className="top-rated-content">
         <div className="section-header">
-          <h1 className="route-heading">
-            Top Rated Movies
-          </h1>
+          <h1 className="route-heading">Top Rated Movies</h1>
 
           <p className="section-description">
             The highest rated movies on movieDB
@@ -96,10 +87,7 @@ class TopRated extends React.Component {
         {results.length > 0 ? (
           <ul className="movie-list-container">
             {results.map(movie => (
-              <MovieCard
-                key={movie.id}
-                movieDetails={movie}
-              />
+              <MovieCard key={movie.id} movieDetails={movie} />
             ))}
           </ul>
         ) : (
@@ -112,10 +100,7 @@ class TopRated extends React.Component {
   }
 
   render() {
-    const {
-      isLoading,
-      topRatedMovieResponse,
-    } = this.state
+    const {isLoading, topRatedMovieResponse} = this.state
 
     return (
       <>
@@ -127,13 +112,12 @@ class TopRated extends React.Component {
             : this.renderTopRatedMoviesList()}
         </main>
 
-        {!isLoading &&
-          topRatedMovieResponse.totalPages && (
-            <Pagination
-              totalPages={topRatedMovieResponse.totalPages}
-              apiCallback={this.getTopRatedMoviesResponse}
-            />
-          )}
+        {topRatedMovieResponse.totalPages && (
+          <Pagination
+            totalPages={topRatedMovieResponse.totalPages}
+            apiCallback={this.getTopRatedMoviesResponse}
+          />
+        )}
       </>
     )
   }

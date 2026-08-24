@@ -1,3 +1,4 @@
+import {useState} from 'react'
 import {Link, withRouter} from 'react-router-dom'
 
 import SearchMoviesContext from '../../context/SearchMoviesContext'
@@ -5,6 +6,8 @@ import SearchMoviesContext from '../../context/SearchMoviesContext'
 import './index.css'
 
 const NavBar = props => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+
   const renderSearchBar = () => (
     <SearchMoviesContext.Consumer>
       {value => {
@@ -23,33 +26,32 @@ const NavBar = props => {
 
           const {history} = props
 
-          if (searchInput.trim() === '') {
+          if (!searchInput.trim()) {
             return
           }
 
           onTriggerSearchingQuery()
 
+          setIsMenuOpen(false)
+
           history.push('/search')
         }
 
         return (
-          <form
-            className="search-container"
-            onSubmit={onSearchHandler}
-          >
+          <form className="search-container" onSubmit={onSearchHandler}>
+            <span className="search-icon">⌕</span>
+
             <input
               type="text"
               className="search-input"
               onChange={onChangeHandler}
               value={searchInput}
-              placeholder="Search movies..."
+              placeholder="Search movies, shows..."
+              aria-label="Search movies"
             />
 
-            <button
-              className="search-button"
-              type="submit"
-            >
-              🔍
+            <button className="search-button" type="submit" aria-label="Search">
+              Search
             </button>
           </form>
         )
@@ -57,40 +59,71 @@ const NavBar = props => {
     </SearchMoviesContext.Consumer>
   )
 
+  const handleNavClick = () => {
+    setIsMenuOpen(false)
+  }
+
   return (
     <nav className="navbar-container">
-      {/* Logo */}
+      <div className="navbar-inner">
+        {/* Logo */}
 
-      <Link to="/" className="logo-container">
-        <h1 className="page-logo">movieDB</h1>
-      </Link>
+        <Link to="/" className="logo-container" onClick={handleNavClick}>
+          <span className="logo-mark">M</span>
 
-      {/* Navigation */}
+          <span className="page-logo">
+            Movie<span>DB</span>
+          </span>
+        </Link>
 
-      <div className="navbar-right">
-        <ul className="nav-items-list">
-          <li className="nav-item">
-            <Link className="nav-link" to="/">
-              Popular
-            </Link>
-          </li>
+        {/* Desktop Navigation */}
 
-          <li className="nav-item">
-            <Link className="nav-link" to="/top-rated">
-              Top Rated
-            </Link>
-          </li>
+        <div className={`navbar-content ${isMenuOpen ? 'menu-open' : ''}`}>
+          <ul className="nav-items-list">
+            <li className="nav-item">
+              <Link className="nav-link" to="/" onClick={handleNavClick}>
+                <span>Home</span>
+              </Link>
+            </li>
 
-          <li className="nav-item">
-            <Link className="nav-link" to="/upcoming">
-              Upcoming
-            </Link>
-          </li>
-        </ul>
+            <li className="nav-item">
+              <Link
+                className="nav-link"
+                to="/top-rated"
+                onClick={handleNavClick}
+              >
+                <span>Top Rated</span>
+              </Link>
+            </li>
 
-        {/* Search */}
+            <li className="nav-item">
+              <Link
+                className="nav-link"
+                to="/upcoming"
+                onClick={handleNavClick}
+              >
+                <span>Upcoming</span>
+              </Link>
+            </li>
+          </ul>
 
-        {renderSearchBar()}
+          {/* Search */}
+
+          <div className="navbar-search">{renderSearchBar()}</div>
+        </div>
+
+        {/* Mobile Menu */}
+
+        <button
+          type="button"
+          className={`menu-button ${isMenuOpen ? 'menu-active' : ''}`}
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label="Toggle navigation"
+        >
+          <span />
+          <span />
+          <span />
+        </button>
       </div>
     </nav>
   )

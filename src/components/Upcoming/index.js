@@ -63,16 +63,9 @@ class Upcoming extends React.Component {
 
   renderLoadingView = () => (
     <div className="loader-container">
-      <Loader
-        type="TailSpin"
-        color="#00c6ff"
-        height={50}
-        width={50}
-      />
+      <Loader type="TailSpin" color="#00c6ff" height={50} width={50} />
 
-      <p className="loading-text">
-        Loading upcoming movies...
-      </p>
+      <p className="loading-text">Loading upcoming movies...</p>
     </div>
   )
 
@@ -84,22 +77,15 @@ class Upcoming extends React.Component {
     return (
       <div className="upcoming-content">
         <div className="section-header">
-          <h1 className="route-heading">
-            Upcoming Movies
-          </h1>
+          <h1 className="route-heading">Upcoming Movies</h1>
 
-          <p className="section-description">
-            Movies coming soon to movieDB
-          </p>
+          <p className="section-description">Movies coming soon to movieDB</p>
         </div>
 
         {results.length > 0 ? (
           <ul className="movie-list-container">
             {results.map(movie => (
-              <MovieCard
-                key={movie.id}
-                movieDetails={movie}
-              />
+              <MovieCard key={movie.id} movieDetails={movie} />
             ))}
           </ul>
         ) : (
@@ -112,10 +98,7 @@ class Upcoming extends React.Component {
   }
 
   render() {
-    const {
-      isLoading,
-      upcomingMovieResponse,
-    } = this.state
+    const {isLoading, upcomingMovieResponse} = this.state
 
     return (
       <>
@@ -127,13 +110,12 @@ class Upcoming extends React.Component {
             : this.renderUpcomingMoviesList()}
         </main>
 
-        {!isLoading &&
-          upcomingMovieResponse.totalPages && (
-            <Pagination
-              totalPages={upcomingMovieResponse.totalPages}
-              apiCallback={this.getUpcomingMoviesResponse}
-            />
-          )}
+        {upcomingMovieResponse.totalPages && (
+          <Pagination
+            totalPages={upcomingMovieResponse.totalPages}
+            apiCallback={this.getUpcomingMoviesResponse}
+          />
+        )}
       </>
     )
   }

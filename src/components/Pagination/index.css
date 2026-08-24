@@ -1,45 +1,75 @@
+/* =========================
+   PAGINATION CONTAINER
+========================= */
+
 .pagination-container {
+  width: 100%;
+
+  min-height: 85px;
+
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   gap: 12px;
 
-  margin: 30px 0;
+  padding: 18px 20px;
+
+  background: #0f1014;
+
+  border-top: 1px solid
+    rgba(255, 255, 255, 0.06);
 }
 
 
-/* Previous / Next buttons */
+/* =========================
+   CONTROL BUTTON
+========================= */
 
 .control-btn {
-  border: none;
+  height: 42px;
 
-  padding: 9px 18px;
+  display: flex;
 
-  min-width: 90px;
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  padding: 0 17px;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.1);
+
+  border-radius: 10px;
+
+  background: #191b21;
+
+  color: #d8d9df;
 
   font-family: 'Roboto', sans-serif;
 
-  font-size: 14px;
+  font-size: 13px;
+
   font-weight: 600;
-
-  color: #fff;
-
-  background: #252832;
-
-  border: 1px solid rgba(255, 255, 255, 0.12);
-
-  border-radius: 20px;
 
   cursor: pointer;
 
-  transition: all 0.25s ease;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 
 /* Hover */
 
-.control-btn:hover {
+.control-btn:hover:not(:disabled) {
   background: linear-gradient(
     135deg,
     #00b8f5,
@@ -48,82 +78,178 @@
 
   border-color: transparent;
 
+  color: #fff;
+
   transform: translateY(-2px);
 
-  box-shadow: 0 5px 15px rgba(0, 180, 255, 0.2);
+  box-shadow:
+    0 7px 20px rgba(0, 180, 255, 0.18);
 }
 
 
-/* Disabled button */
+/* Click */
+
+.control-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+
+/* Disabled */
 
 .control-btn:disabled {
   opacity: 0.35;
 
   cursor: not-allowed;
 
-  transform: none;
+  background: #15161b;
 
-  box-shadow: none;
+  color: #777;
+
+  border-color:
+    rgba(255, 255, 255, 0.05);
 }
 
 
-/* Page number */
+/* =========================
+   ARROWS
+========================= */
 
-.page-no {
-  margin: 0;
+.arrow {
+  font-size: 22px;
 
-  min-width: 42px;
+  font-weight: 300;
+
+  line-height: 1;
+}
+
+
+/* =========================
+   PAGE INDICATOR
+========================= */
+
+.page-indicator {
+  min-width: 105px;
+
   height: 42px;
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
-  padding: 0 12px;
+  gap: 7px;
 
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 0 15px;
 
-  border-radius: 50%;
+  border: 1px solid
+    rgba(255, 255, 255, 0.1);
 
-  background: linear-gradient(
-    135deg,
-    #00b8f5,
-    #635bff
-  );
+  border-radius: 10px;
 
+  background: rgba(255, 255, 255, 0.04);
+
+  box-shadow:
+    inset 0 1px 0
+    rgba(255, 255, 255, 0.03);
+}
+
+
+/* Current page */
+
+.current-page {
   color: #fff;
 
   font-family: 'Roboto', sans-serif;
 
-  font-size: 15px;
+  font-size: 14px;
 
   font-weight: 700;
 
-  box-shadow: 0 4px 12px rgba(0, 180, 255, 0.2);
+  min-width: 20px;
+
+  text-align: center;
 }
 
 
-/* Mobile */
+/* Divider */
+
+.page-divider {
+  color: #555862;
+
+  font-size: 13px;
+}
+
+
+/* Total pages */
+
+.total-pages {
+  color: #777b86;
+
+  font-family: 'Roboto', sans-serif;
+
+  font-size: 13px;
+
+  min-width: 20px;
+
+  text-align: center;
+}
+
+
+/* =========================
+   FOCUS
+========================= */
+
+.control-btn:focus-visible {
+  outline: 2px solid #00c6ff;
+
+  outline-offset: 3px;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
 
 @media screen and (max-width: 425px) {
   .pagination-container {
+    min-height: 75px;
+
     gap: 8px;
 
-    margin: 25px 0;
+    padding: 15px 10px;
   }
+
 
   .control-btn {
-    padding: 8px 14px;
+    height: 38px;
 
-    min-width: 75px;
+    padding: 0 12px;
 
-    font-size: 12px;
+    font-size: 11px;
+
+    gap: 4px;
   }
 
-  .page-no {
-    min-width: 36px;
-    height: 36px;
 
-    font-size: 13px;
+  .previous-btn span:last-child,
+  .next-btn span:first-child {
+    display: none;
+  }
+
+
+  .control-btn .arrow {
+    font-size: 20px;
+  }
+
+
+  .page-indicator {
+    min-width: 75px;
+
+    height: 38px;
+
+    padding: 0 10px;
+
+    gap: 5px;
   }
 }

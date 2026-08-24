@@ -1,23 +1,51 @@
-import {lazy, Suspense, useState} from 'react'
-import {Route, Switch} from 'react-router-dom'
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
+
+import {
+  Route,
+  Switch,
+} from 'react-router-dom'
 
 import SearchMoviesContext from './context/SearchMoviesContext'
 
 import './App.css'
 
 
-// API Key
-const API_KEY = 'f32b79895b21468afbdd6d5342cbf3da'
+const API_KEY =
+  'f32b79895b21468afbdd6d5342cbf3da'
 
 
 // Lazy loaded components
-const Popular = lazy(() => import('./components/Popular'))
-const TopRated = lazy(() => import('./components/TopRated'))
-const Upcoming = lazy(() => import('./components/Upcoming'))
-const SearchQuery = lazy(() => import('./components/SearchQuery'))
+
+const Popular = lazy(
+  () => import('./components/Popular'),
+)
+
+const TopRated = lazy(
+  () => import('./components/TopRated'),
+)
+
+const Upcoming = lazy(
+  () => import('./components/Upcoming'),
+)
+
+const SearchQuery = lazy(
+  () => import('./components/SearchQuery'),
+)
+
+const MovieDetails = lazy(
+  () => import('./components/MovieDetails'),
+)
 
 
 // Loading UI
+
 const LoadingView = () => (
   <div className="app-loader">
     <div className="spinner" />
@@ -26,82 +54,282 @@ const LoadingView = () => (
 )
 
 
+// Normalize TMDB response
+
+const getUpdatedData = responseData => ({
+  totalPages:
+    responseData.total_pages || 0,
+
+  totalResults:
+    responseData.total_results || 0,
+
+  results: (
+    responseData.results || []
+  ).map(eachMovie => ({
+    id: eachMovie.id,
+
+    posterPath: eachMovie.poster_path
+      ? `https://image.tmdb.org/t/p/w500${eachMovie.poster_path}`
+      : 'https://via.placeholder.com/500x750?text=No+Image',
+
+    voteAverage:
+      eachMovie.vote_average,
+
+    title:
+      eachMovie.title,
+  })),
+})
+
+
 const App = () => {
-  const [searchResponse, setSearchResponse] = useState({})
-  const [apiStatus, setApiStatus] = useState('INITIAL')
-  const [searchInput, setSearchInput] = useState('')
+
+  const [searchResponse, setSearchResponse] =
+    useState({})
+
+  const [apiStatus, setApiStatus] =
+    useState('INITIAL')
+
+  const [searchInput, setSearchInput] =
+    useState('')
+
+  const [searchQuery, setSearchQuery] =
+    useState('')
+
+  // SINGLE SOURCE OF TRUTH
+
+  const [currentPage, setCurrentPage] = useState(1)
+
+
+  const searchInputRef =
+    useRef('')
+
+  const searchQueryRef =
+    useRef('')
+
+  const requestIdRef =
+    useRef(0)
+
+  const controllerRef =
+    useRef(null)
 
 
   // Search input
-  const onChangeSearchInput = text => {
-    setSearchInput(text)
-  }
+
+  const onChangeSearchInput =
+    useCallback(text => {
+
+      searchInputRef.current = text
+
+      setSearchInput(text)
+
+    }, [])
 
 
-  // Convert API response
-  const getUpdatedData = responseData => ({
-    totalPages: responseData.total_pages,
-    totalResults: responseData.total_results,
+  // Search / Pagination API
 
-    results: responseData.results.map(eachMovie => ({
-      id: eachMovie.id,
+  const onTriggerSearchingQuery =
+    useCallback(async (page = 1) => {
 
-      posterPath: eachMovie.poster_path
-        ? `https://image.tmdb.org/t/p/w500${eachMovie.poster_path}`
-        : 'https://via.placeholder.com/500x750?text=No+Image',
-
-      voteAverage: eachMovie.vote_average,
-
-      title: eachMovie.title,
-    })),
-  })
+      const query =
+        page === 1
+          ? searchInputRef.current.trim()
+          : searchQueryRef.current.trim()
 
 
-  // Search movies
-  const onTriggerSearchingQuery = async (page = 1) => {
-    if (!searchInput.trim()) {
-      return
-    }
+      // Empty query
 
-    setApiStatus('IN_PROGRESS')
-
-    try {
-      const apiUrl = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&language=en-US&query=${encodeURIComponent(
-        searchInput,
-      )}&page=${page}`
-
-      const response = await fetch(apiUrl)
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch search results')
+      if (!query) {
+        return false
       }
 
-      const data = await response.json()
 
-      setSearchResponse(getUpdatedData(data))
+      // Cancel previous request
 
-      setApiStatus('SUCCESS')
-    } catch (error) {
-      console.error(error)
-
-      setApiStatus('FAILURE')
-    }
-  }
+      if (controllerRef.current) {
+        controllerRef.current.abort()
+      }
 
 
-  return (
-    <SearchMoviesContext.Provider
-      value={{
+      // New search
+
+      if (page === 1) {
+
+        searchQueryRef.current =
+          query
+
+        setSearchQuery(query)
+
+        // New search always starts
+        // from page 1
+
+        setCurrentPage(1)
+      }
+
+
+      // Request ID
+
+      const requestId =
+        requestIdRef.current + 1
+
+      requestIdRef.current =
+        requestId
+
+
+      const controller =
+        new AbortController()
+
+      controllerRef.current =
+        controller
+
+
+      setApiStatus('IN_PROGRESS')
+
+
+      try {
+
+        const apiUrl =
+          `https://api.themoviedb.org/3/search/movie` +
+          `?api_key=${API_KEY}` +
+          `&language=en-US` +
+          `&query=${encodeURIComponent(query)}` +
+          `&page=${page}`
+
+
+        const response =
+          await fetch(
+            apiUrl,
+            {
+              signal:
+                controller.signal,
+            },
+          )
+
+
+        if (!response.ok) {
+          throw new Error(
+            'Failed to fetch search results',
+          )
+        }
+
+
+        const data =
+          await response.json()
+
+
+        // Ignore old request
+
+        if (
+          requestId !==
+          requestIdRef.current
+        ) {
+          return false
+        }
+
+
+        const updatedData =
+          getUpdatedData(data)
+
+
+        setSearchResponse(
+          updatedData,
+        )
+
+        setApiStatus(
+          'SUCCESS',
+        )
+
+
+        // IMPORTANT
+
+        // Update page ONLY after
+        // successful API response.
+
+        setCurrentPage(page)
+
+
+        return true
+
+      } catch (error) {
+
+        if (
+          error.name ===
+          'AbortError'
+        ) {
+          return false
+        }
+
+
+        if (
+          requestId ===
+          requestIdRef.current
+        ) {
+          setApiStatus(
+            'FAILURE',
+          )
+        }
+
+
+        return false
+
+      } finally {
+
+        if (
+          controllerRef.current ===
+          controller
+        ) {
+          controllerRef.current =
+            null
+        }
+
+      }
+
+    }, [])
+
+
+  // Context value
+
+  const contextValue =
+    useMemo(
+      () => ({
+        searchResponse,
+
+        apiStatus,
+
+        onTriggerSearchingQuery,
+
+        searchInput,
+
+        searchQuery,
+
+        onChangeSearchInput,
+
+        currentPage,
+      }),
+      [
         searchResponse,
         apiStatus,
         onTriggerSearchingQuery,
         searchInput,
+        searchQuery,
         onChangeSearchInput,
-      }}
+        currentPage,
+      ],
+    )
+
+
+  return (
+    <SearchMoviesContext.Provider
+      value={contextValue}
     >
+
       <div className="App d-flex flex-column">
 
-        <Suspense fallback={<LoadingView />}>
+        <Suspense
+          fallback={
+            <LoadingView />
+          }
+        >
+
           <Switch>
 
             <Route
@@ -128,13 +356,20 @@ const App = () => {
               component={SearchQuery}
             />
 
+            <Route
+              exact
+              path="/movie/:id"
+              component={MovieDetails}
+            />
+
           </Switch>
+
         </Suspense>
 
       </div>
+
     </SearchMoviesContext.Provider>
   )
 }
-
 
 export default App

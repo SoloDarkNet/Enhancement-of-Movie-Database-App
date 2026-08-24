@@ -67,16 +67,9 @@ class Popular extends React.Component {
 
   renderLoadingView = () => (
     <div className="loader-container">
-      <Loader
-        type="TailSpin"
-        color="#00c6ff"
-        height={50}
-        width={50}
-      />
+      <Loader type="TailSpin" color="#00c6ff" height={50} width={50} />
 
-      <p className="loading-text">
-        Loading movies...
-      </p>
+      <p className="loading-text">Loading movies...</p>
     </div>
   )
 
@@ -84,9 +77,7 @@ class Popular extends React.Component {
     <div className="error-container">
       <h1>Something went wrong</h1>
 
-      <p>
-        We couldn't load the movies. Please try again.
-      </p>
+      <p>We couldn&apos;t load the movies. Please try again.</p>
 
       <button
         type="button"
@@ -114,42 +105,41 @@ class Popular extends React.Component {
     return (
       <ul className="movie-list">
         {results.map(movie => (
-          <MovieCard
-            key={movie.id}
-            movieDetails={movie}
-          />
+          <MovieCard key={movie.id} movieDetails={movie} />
         ))}
       </ul>
     )
   }
 
+  renderContent = () => {
+    const {isLoading, hasError} = this.state
+
+    if (isLoading) {
+      return this.renderLoadingView()
+    }
+
+    if (hasError) {
+      return this.renderErrorView()
+    }
+
+    return this.renderPopularMoviesList()
+  }
+
   render() {
-    const {
-      isLoading,
-      popularMovieResponse,
-      hasError,
-    } = this.state
+    const {popularMovieResponse} = this.state
 
     return (
       <>
         <NavBar />
 
-        <main className="route-page-body">
-          {isLoading
-            ? this.renderLoadingView()
-            : hasError
-            ? this.renderErrorView()
-            : this.renderPopularMoviesList()}
-        </main>
+        <main className="route-page-body">{this.renderContent()}</main>
 
-        {!isLoading &&
-          !hasError &&
-          popularMovieResponse.totalPages && (
-            <Pagination
-              totalPages={popularMovieResponse.totalPages}
-              apiCallback={this.getPopularMoviesResponse}
-            />
-          )}
+        {popularMovieResponse.totalPages && (
+          <Pagination
+            totalPages={popularMovieResponse.totalPages}
+            apiCallback={this.getPopularMoviesResponse}
+          />
+        )}
       </>
     )
   }

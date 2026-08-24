@@ -1,0 +1,180 @@
+.movie-details-page {
+  min-height: calc(100vh - 72px);
+  padding: 32px 24px 56px;
+  background: #08131f;
+  color: #f5f7fa;
+}
+
+.movie-details-card {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid #263d50;
+  border-radius: 8px;
+  background: #102331;
+}
+
+.movie-details-backdrop {
+  display: block;
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  opacity: 0.45;
+}
+
+.movie-details-content {
+  display: flex;
+  gap: 32px;
+  padding: 32px;
+}
+
+.movie-details-poster {
+  width: 240px;
+  height: 360px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.movie-details-copy {
+  align-self: center;
+}
+
+.movie-details-copy h1 {
+  margin: 0 0 12px;
+  font-size: 36px;
+}
+
+.movie-details-rating,
+.movie-details-meta {
+  color: #7ed6df;
+  font-weight: 600;
+}
+
+.movie-details-status {
+  max-width: 760px;
+  margin: 80px auto;
+  text-align: center;
+}
+
+.back-to-movies {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 10px 16px;
+  border-radius: 4px;
+  background: #00c6ff;
+  color: #06111b;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+@media (max-width: 640px) {
+  .movie-details-page {
+    padding: 20px 16px 40px;
+  }
+
+  .movie-details-backdrop {
+    height: 160px;
+  }
+
+  .movie-details-content {
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .movie-details-poster {
+    width: 100%;
+    height: auto;
+    max-height: 460px;
+  }
+
+  .movie-details-copy h1 {
+    font-size: 28px;
+  }
+}
+
+
+.movie-trailer-section {
+  width: 90%;
+  max-width: 1100px;
+
+  margin: 40px auto 60px;
+}
+
+.movie-trailer-section h2 {
+  color: #fff;
+
+  font-family: 'Montserrat', sans-serif;
+
+  font-size: 24px;
+
+  margin-bottom: 20px;
+}
+
+
+/* YouTube video */
+
+.trailer-container {
+  position: relative;
+
+  width: 100%;
+
+  padding-top: 56.25%;
+
+  overflow: hidden;
+
+  border-radius: 14px;
+
+  background-color: #000;
+
+  box-shadow:
+    0 10px 35px rgba(0, 0, 0, 0.5);
+}
+
+.trailer-container iframe {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  border: none;
+}
+
+
+/* No trailer */
+
+.no-trailer {
+  height: 250px;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  background-color: #181a20;
+
+  border-radius: 12px;
+
+  color: #888;
+}
+
+
+/* Mobile */
+
+@media screen and (max-width: 600px) {
+  .movie-trailer-section {
+    width: 94%;
+
+    margin-top: 25px;
+  }
+
+  .movie-trailer-section h2 {
+    font-size: 20px;
+  }
+}
