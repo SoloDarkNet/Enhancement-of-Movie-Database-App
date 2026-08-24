@@ -1,15 +1,129 @@
-.control-btn {
-  border: 1px solid black;
-  padding: 12px 24px;
-  font-family: 'Roboto';
-  background-color: #fff;
-  cursor: pointer;
+.pagination-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  margin: 30px 0;
 }
 
+
+/* Previous / Next buttons */
+
+.control-btn {
+  border: none;
+
+  padding: 9px 18px;
+
+  min-width: 90px;
+
+  font-family: 'Roboto', sans-serif;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #fff;
+
+  background: #252832;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  border-radius: 20px;
+
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+}
+
+
+/* Hover */
+
+.control-btn:hover {
+  background: linear-gradient(
+    135deg,
+    #00b8f5,
+    #635bff
+  );
+
+  border-color: transparent;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 5px 15px rgba(0, 180, 255, 0.2);
+}
+
+
+/* Disabled button */
+
+.control-btn:disabled {
+  opacity: 0.35;
+
+  cursor: not-allowed;
+
+  transform: none;
+
+  box-shadow: none;
+}
+
+
+/* Page number */
+
 .page-no {
-  margin-bottom: 0;
-  margin-left: 15px;
-  margin-right: 15px;
-  border: 1px solid black;
-  padding: 8px 16px;
+  margin: 0;
+
+  min-width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 12px;
+
+  border: 1px solid rgba(255, 255, 255, 0.15);
+
+  border-radius: 50%;
+
+  background: linear-gradient(
+    135deg,
+    #00b8f5,
+    #635bff
+  );
+
+  color: #fff;
+
+  font-family: 'Roboto', sans-serif;
+
+  font-size: 15px;
+
+  font-weight: 700;
+
+  box-shadow: 0 4px 12px rgba(0, 180, 255, 0.2);
+}
+
+
+/* Mobile */
+
+@media screen and (max-width: 425px) {
+  .pagination-container {
+    gap: 8px;
+
+    margin: 25px 0;
+  }
+
+  .control-btn {
+    padding: 8px 14px;
+
+    min-width: 75px;
+
+    font-size: 12px;
+  }
+
+  .page-no {
+    min-width: 36px;
+    height: 36px;
+
+    font-size: 13px;
+  }
 }
